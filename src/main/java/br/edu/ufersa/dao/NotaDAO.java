@@ -24,6 +24,7 @@ public class NotaDAO {
 			nota.setId(rs.getInt("id_note"));
 			nota.setTitulo(rs.getString("titulo"));
 			nota.setDescricao(rs.getString("descricao"));
+			lista.add(nota);
 		}
 		return lista;
  	}
