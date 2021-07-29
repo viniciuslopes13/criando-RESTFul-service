@@ -3,6 +3,7 @@ package br.edu.ufersa.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,22 +44,28 @@ public class NotaDAO {
 		return nota; 
 	}
 	
-	public void addNota(Nota nota) throws Exception{
+	public int addNota(Nota nota) throws Exception{
+		int idGerado = 0;
 		Connection conexao = BDConfig.getConnection();
 		String sql = "INSERT INTO tb_nota(titulo,descricao) VALUES (?,?)";
-		PreparedStatement statement = conexao.prepareStatement(sql);
+		PreparedStatement statement = conexao.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
 		statement.setString(1, nota.getTitulo());
 		statement.setString(2, nota.getDescricao());
 		statement.execute();
+		ResultSet rs = statement.getGeneratedKeys();
+		if(rs.next()) {
+			idGerado = rs.getInt(1);
+		}
+		return idGerado;
 	}
 	
-	public void editarNota(Nota nota) throws Exception{
+	public void editarNota(Nota nota, int idNota) throws Exception{
 		Connection conexao = BDConfig.getConnection();
 		String sql = "UPDATE tb_nota SET titulo=?, descricao=? WHERE id_note=?";
 		PreparedStatement statement = conexao.prepareStatement(sql);
 		statement.setString(1, nota.getTitulo());
 		statement.setString(2, nota.getDescricao());
-		statement.setInt(3, nota.getId());
+		statement.setInt(3, idNota);
 		statement.execute();		
 	}
 	
